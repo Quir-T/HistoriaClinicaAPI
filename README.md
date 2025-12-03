@@ -256,14 +256,6 @@ NODE_ENV=development
 }
 ```
 
-## Próximos Pasos
-
-- Migrar a base de datos (PostgreSQL/MongoDB)
-- Implementar autenticación JWT
-- Agregar tests unitarios e integración
-- Documentación con Swagger/OpenAPI
-- Dockerización del proyecto
-- Implementar logging con Winston
 
 ## Scripts Disponibles
 
