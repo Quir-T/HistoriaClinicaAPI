@@ -1,5 +1,4 @@
 const Turno = require('../models/Turno');
-// ❌ REMOVIDO: const createError = require('../utils/createError');
 
 class TurnoRepository {
     constructor() {
@@ -72,7 +71,7 @@ class TurnoRepository {
             }
             
             if (turno.fechaHora === fechaHora) {
-                return turno; // ✅ Retorna el turno conflictivo o null
+                return turno; // Retorna el turno conflictivo o null
             }
         }
         return null;
@@ -90,7 +89,7 @@ class TurnoRepository {
     async update(id, updateData) {
         const turno = this.turnos.get(id);
         if (!turno) {
-            return null; // ✅ Solo retorna null
+            return null; // Solo retorna null
         }
         
         turno.update(updateData);
@@ -102,7 +101,7 @@ class TurnoRepository {
     async delete(id) {
         const turno = this.turnos.get(id);
         if (!turno) {
-            return null; // ✅ Solo retorna null
+            return null; // Solo retorna null
         }
         
         this.turnos.delete(id);
@@ -114,10 +113,10 @@ class TurnoRepository {
         const stats = {
             total: this.turnos.size,
             porEstado: {
-                pendiente: 0,
-                confirmado: 0,
+                agendado: 0,      // ✅ Cambiar 'pendiente' por 'agendado'
                 cancelado: 0,
                 completado: 0
+                // ❌ Remover 'confirmado'
             }
         };
 

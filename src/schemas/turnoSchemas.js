@@ -11,8 +11,8 @@ const fechaFutura = (value, helpers) => {
     return value;
 };
 
-// estados válidos para turnos
-const estadosValidos = ['pendiente', 'confirmado', 'cancelado', 'completado'];
+// estados válidos para turnos (ACTUALIZADO)
+const estadosValidos = ['agendado', 'cancelado', 'completado'];
 
 // esquema para crear turno
 const createTurnoSchema = Joi.object({
@@ -45,7 +45,7 @@ const createTurnoSchema = Joi.object({
         }),
     estado: Joi.string()
         .valid(...estadosValidos)
-        .default('pendiente')
+        .default('agendado')  // ✅ Cambiar default
         .messages({
             'any.only': `El estado debe ser uno de los siguientes: ${estadosValidos.join(', ')}`
         })
