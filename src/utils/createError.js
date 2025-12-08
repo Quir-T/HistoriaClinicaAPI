@@ -1,6 +1,5 @@
 /**
- * Crea un error tipado simple sin clases
- * Nivel 2 - Error Handler sin complejidad de clases
+ * Crea un error personalizado con un mensaje, código de estado HTTP y detalles adicionales.
  * 
  * @param {string} message - Mensaje del error
  * @param {number} status - Código HTTP (400, 404, 409, 500, etc.)

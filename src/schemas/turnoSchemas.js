@@ -5,14 +5,30 @@ const fechaFutura = (value, helpers) => {
     const now = new Date();
     const inputFechaHora = new Date(value);
 
+    if (isNaN(inputFechaHora.getTime())) {
+        return helpers.error('string.isoDate');
+    }
+
     if (inputFechaHora <= now) {
         return helpers.error('datetime.future');
     }
+    
     return value;
 };
 
-// estados válidos para turnos (ACTUALIZADO)
+// estados válidos para turnos
 const estadosValidos = ['agendado', 'cancelado', 'completado'];
+
+// esquema para fechaHora como string
+const fechaHoraSchema = Joi.string()
+    .isoDate()
+    .custom(fechaFutura, 'validación de fecha futura')
+    .required()
+    .messages({
+        'string.isoDate': 'La fecha debe estar en formato ISO (YYYY-MM-DDTHH:MM:SS)',
+        'datetime.future': 'El turno debe ser programado para una fecha y hora futura',
+        'any.required': 'La fecha y hora son requeridas'
+    });
 
 // esquema para crear turno
 const createTurnoSchema = Joi.object({
@@ -23,15 +39,7 @@ const createTurnoSchema = Joi.object({
             'string.guid': 'El ID del paciente debe ser un UUID válido',
             'any.required': 'El ID del paciente es obligatorio'
         }),
-    fechaHora: Joi.date()
-        .iso()
-        .custom(fechaFutura, 'validación de fecha futura')
-        .required()
-        .messages({
-            'date.format': 'La fecha debe estar en formato ISO (YYYY-MM-DDTHH:MM:SS)',
-            'datetime.future': 'El turno debe ser programado para una fecha y hora futura',
-            'any.required': 'La fecha y hora son requeridas'
-        }),
+    fechaHora: fechaHoraSchema,
     motivo: Joi.string()
         .trim()
         .min(3)
@@ -45,7 +53,7 @@ const createTurnoSchema = Joi.object({
         }),
     estado: Joi.string()
         .valid(...estadosValidos)
-        .default('agendado')  // ✅ Cambiar default
+        .default('agendado')
         .messages({
             'any.only': `El estado debe ser uno de los siguientes: ${estadosValidos.join(', ')}`
         })
@@ -58,13 +66,7 @@ const updateTurnoSchema = Joi.object({
         .messages({
             'string.guid': 'El ID del paciente debe ser un UUID válido'
         }),
-    fechaHora: Joi.date()
-        .iso()
-        .custom(fechaFutura, 'validación de fecha futura')
-        .messages({
-            'date.format': 'La fecha debe estar en formato ISO (YYYY-MM-DDTHH:MM:SS)',
-            'datetime.future': 'El turno debe ser programado para una fecha y hora futura'
-        }),
+    fechaHora: fechaHoraSchema.optional(),
     motivo: Joi.string()
         .trim()
         .min(3)
@@ -110,10 +112,10 @@ const pacienteIdParamsSchema = Joi.object({
 // esquema para validar fecha en parámetros (YYYY-MM-DD) - para agenda del día
 const fechaParamsSchema = Joi.object({
     fecha: Joi.string()
-        .isoDate()
+        .pattern(/^\d{4}-\d{2}-\d{2}$/)
         .required()
         .messages({
-            'string.isoDate': 'La fecha debe estar en formato ISO (YYYY-MM-DD)',
+            'string.pattern.base': 'La fecha debe estar en formato YYYY-MM-DD',
             'any.required': 'Fecha requerida en la URL'
         })
 });

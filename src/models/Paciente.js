@@ -6,7 +6,7 @@ class Paciente {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
-        this.fechaNacimiento = fechaNacimiento; // Almacenamos fecha de nacimiento en lugar de edad
+        this.fechaNacimiento = fechaNacimiento; 
 
         this.createdAt = new Date().toISOString();
         this.updatedAt = new Date().toISOString();

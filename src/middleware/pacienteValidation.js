@@ -3,7 +3,7 @@ const {
   createPacienteSchema, 
   updatePacienteSchema, 
   pacienteParamsSchema,
-  dniParamSchema  // ✅ Ahora reutiliza la misma validación
+  dniParamSchema  
 } = require('../schemas/pacienteSchemas');
 
 // Validaciones para el body

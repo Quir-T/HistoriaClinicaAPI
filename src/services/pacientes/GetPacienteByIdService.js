@@ -6,15 +6,15 @@ class GetPacienteByIdService {
     }
     
     async execute(id) {
-        // ✅ NUEVO: Validar que se proporcionó ID
+        // Validar que se proporcionó ID
         if (!id) {
             throw createError('ID de paciente requerido', 400, { field: 'id' });
         }
         
-        // ✅ NUEVO: Buscar paciente
+        // Buscar paciente
         const paciente = await this.pacienteRepository.findById(id);
         
-        // ✅ NUEVO: Validar que existe
+        // Validar que existe
         if (!paciente) {
             throw createError('Paciente no encontrado', 404, { 
                 field: 'id', 

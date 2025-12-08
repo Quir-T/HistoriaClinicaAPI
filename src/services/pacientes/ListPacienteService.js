@@ -8,8 +8,7 @@ class ListPacienteService {
     async execute() {
         const pacientes = await this.pacienteRepository.findAll();
         
-        // ✅ CAMBIO CRÍTICO: Lista vacía NO es error, es resultado válido
-        // En una API REST, obtener una lista vacía es perfectamente normal
+        
         return pacientes || [];
     }
 }

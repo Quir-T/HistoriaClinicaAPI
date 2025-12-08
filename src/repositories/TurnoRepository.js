@@ -14,7 +14,7 @@ class TurnoRepository {
 
     // Buscar por ID
     async findById(id) {
-        return this.turnos.get(id) || null; // ✅ Solo retorna null, no error
+        return this.turnos.get(id) || null; // Solo retorna null, no error
     }
 
     // Buscar turnos por paciente ID
@@ -32,19 +32,38 @@ class TurnoRepository {
         });
     }
 
-    // Buscar turnos por fecha
+    // Buscar turnos por fecha 
     async findByFecha(fecha) {
+        console.log('[REPO] Buscando turnos por fecha:', fecha);
         const turnosFecha = [];
         
         for (const turno of this.turnos.values()) {
-            const turnoFecha = turno.fechaHora.split('T')[0];
+            //Manejar tanto Date como string
+            let turnoFecha;
+            
+            if (turno.fechaHora instanceof Date) {
+                turnoFecha = turno.fechaHora.toISOString().split('T')[0];
+            } else if (typeof turno.fechaHora === 'string') {
+                turnoFecha = turno.fechaHora.split('T')[0];
+            } else {
+                console.warn('[REPO] Formato de fechaHora desconocido:', turno.fechaHora);
+                continue;
+            }
+            
+            console.log(`[REPO] Comparando: turno ${turnoFecha} vs buscada ${fecha}`);
+            
             if (turnoFecha === fecha) {
                 turnosFecha.push(turno);
             }
         }
         
+        console.log(`[REPO] Encontrados ${turnosFecha.length} turnos para fecha ${fecha}`);
+        
+        // Ordenar por hora
         return turnosFecha.sort((a, b) => {
-            return new Date(a.fechaHora) - new Date(b.fechaHora);
+            const fechaA = a.fechaHora instanceof Date ? a.fechaHora : new Date(a.fechaHora);
+            const fechaB = b.fechaHora instanceof Date ? b.fechaHora : new Date(b.fechaHora);
+            return fechaA - fechaB;
         });
     }
 
@@ -113,10 +132,9 @@ class TurnoRepository {
         const stats = {
             total: this.turnos.size,
             porEstado: {
-                agendado: 0,      // ✅ Cambiar 'pendiente' por 'agendado'
+                agendado: 0,      
                 cancelado: 0,
                 completado: 0
-                // ❌ Remover 'confirmado'
             }
         };
 
