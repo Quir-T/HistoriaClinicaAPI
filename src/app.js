@@ -1,60 +1,80 @@
 const express = require('express');
-const { errorHandler, notFoundHandler } = require('./middleware/errorHandler'); // ✅ NUEVO import
+const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
 
-console.log('🔄 Iniciando configuración minimalista de Express...');
+// Crear repositorios 
+const PacienteRepository = require('./repositories/PacienteRepository');
+const TurnoRepository = require('./repositories/TurnoRepository');
 
-// Crear aplicación Express
+const pacienteRepository = new PacienteRepository();
+const turnoRepository = new TurnoRepository();
+
+console.log('Repositorios compartidos creados');
+console.log('Estado inicial - Pacientes:', pacienteRepository.findAll().length);
+console.log('Estado inicial - Turnos:', turnoRepository.findAll().length);
+
 const app = express();
 
-console.log('🔄 Configurando middleware SOLO lo esencial...');
-
-// Middleware de logging simple PRIMERO
+// Middleware de logging
 app.use((req, res, next) => {
-  console.log(`📥 REQUEST: ${req.method} ${req.url} - ${new Date().toISOString()}`);
+  console.log(`REQUEST: ${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
 });
 
-// SOLO lo básico - sin helmet, cors, compression
+// Middleware básico
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-console.log('🔄 Configurando rutas básicas...');
-
-// Ruta de health check
+// Health check
 app.get('/health', (req, res) => {
-  console.log('🔄 Health check ejecutándose...');
+  console.log('Health check ejecutandose...');
   res.status(200).json({ 
     status: 'ok',
     timestamp: new Date().toISOString()
   });
-  console.log('✅ Health check enviado');
+  console.log('Health check enviado');
 });
 
 // Ruta raíz  
 app.get('/', (req, res) => {
-  console.log('🔄 Ruta raíz ejecutándose...');
   res.status(200).json({
-    message: 'API Minimalista funcionando',
+    message: 'API CRUD - Gestión de Pacientes y Turnos',
+    endpoints: {
+      health: '/health',
+      pacientes: '/api/pacientes',
+      turnos: '/api/turnos'
+    },
     timestamp: new Date().toISOString()
   });
-  console.log('✅ Ruta raíz enviada');
 });
 
-console.log('🔄 Configurando rutas de pacientes...');
-
-// Rutas de pacientes
+// Rutas con inyección de repositorios
 try {
   const pacientesRoutes = require('./routes/pacientes');
-  app.use('/pacientes', pacientesRoutes);
-  console.log('✅ Rutas de pacientes configuradas');
+  app.use('/api/pacientes', (req, res, next) => {
+    console.log('Inyectando repositorio de pacientes...');
+    req.pacienteRepository = pacienteRepository;
+    next();
+  }, pacientesRoutes);
+  console.log('Rutas de pacientes configuradas');
 } catch (error) {
-  console.error('❌ Error cargando rutas de pacientes:', error.message);
+  console.error('Error cargando rutas de pacientes:', error.message);
 }
 
-// ✅ NUEVO: Usar los nuevos error handlers
-app.use(notFoundHandler);  // ← Para rutas no encontradas (404)
-app.use(errorHandler);     // ← Error handler global
+try {
+  const turnosRoutes = require('./routes/turnos');
+  app.use('/api/turnos', (req, res, next) => {
+    console.log('Inyectando repositorios de turnos...');
+    req.turnoRepository = turnoRepository;
+    req.pacienteRepository = pacienteRepository;
+    next();
+  }, turnosRoutes);
+  console.log('Rutas de turnos configuradas');
+} catch (error) {
+  console.error('Error cargando rutas de turnos:', error.message);
+}
 
-console.log('✅ App minimalista configurada con nuevo error handling');
+// Error handlers
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 module.exports = app;

@@ -1,10 +1,7 @@
-/**
- * Error handler global simple - Nivel 2
- * Reemplaza el sistema complejo de clases por función simple
- */
+
 function errorHandler(err, req, res, next) {
   // Log del error para debugging
-  console.error('💥 [ERROR]:', {
+  console.error('[ERROR]:', {
     message: err.message,
     status: err.status,
     url: req.url,
@@ -25,7 +22,7 @@ function errorHandler(err, req, res, next) {
     status: status >= 400 && status < 500 ? 'fail' : 'error'
   };
 
-  // En desarrollo, incluir detalles adicionales
+  // detalles adicionales
   if (process.env.NODE_ENV === 'development') {
     if (err.details) response.details = err.details;
     if (err.stack) response.stack = err.stack;

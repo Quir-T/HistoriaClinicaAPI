@@ -14,7 +14,7 @@ const pastDate = (value, helpers) => {
   return value;
 };
 
-// ✅ Extraer validación de DNI como componente reutilizable
+// Extraer validación de DNI como componente reutilizable
 const dniValidation = Joi.string()
   .pattern(/^[0-9]{7,8}$/)
   .messages({
@@ -110,7 +110,7 @@ const pacienteParamsSchema = Joi.object({
     })
 });
 
-// ✅ SIMPLIFICADO: Reutilizar validación de DNI existente
+//Reutilizar validación de DNI existente
 const dniParamSchema = Joi.object({
   dni: dniValidation.required().messages({
     'any.required': 'DNI requerido en la URL'

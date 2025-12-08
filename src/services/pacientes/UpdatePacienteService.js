@@ -6,7 +6,7 @@ class UpdatePacienteService {
     }
 
     async execute(id, updateData) {
-        // ✅ NUEVO: Verificar que el paciente existe ANTES de actualizar
+        // Verificar que el paciente existe ANTES de actualizar
         const existingPaciente = await this.pacienteRepository.findById(id);
         if (!existingPaciente) {
             throw createError('Paciente no encontrado para actualizar', 404, {
@@ -15,7 +15,7 @@ class UpdatePacienteService {
             });
         }
 
-        // ✅ NUEVO: Si se está actualizando el DNI, verificar que no exista en otro paciente
+        // Si se está actualizando el DNI, verificar que no exista en otro paciente
         if (updateData.dni && updateData.dni !== existingPaciente.dni) {
             const pacienteWithDni = await this.pacienteRepository.findByDni(updateData.dni);
             if (pacienteWithDni) {
@@ -27,10 +27,10 @@ class UpdatePacienteService {
             }
         }
 
-        // ✅ NUEVO: Hacer la actualización
+        // Hacer la actualización
         const paciente = await this.pacienteRepository.update(id, updateData);
         
-        // ✅ NUEVO: Verificar que se actualizó correctamente
+        // Verificar que se actualizó correctamente
         if (!paciente) {
             throw createError('Error al actualizar el paciente', 500, {
                 operation: 'update',

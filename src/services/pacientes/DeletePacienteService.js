@@ -6,7 +6,7 @@ class DeletePacienteService {
     }
     
     async execute(id) {
-        // ✅ NUEVO: Verificar que el paciente existe antes de eliminar
+        //Verificar que el paciente existe antes de eliminar
         const existingPaciente = await this.pacienteRepository.findById(id);
         if (!existingPaciente) {
             throw createError('Paciente no encontrado para eliminar', 404, {
@@ -15,10 +15,10 @@ class DeletePacienteService {
             });
         }
 
-        // ✅ NUEVO: Eliminar paciente
+        // Eliminar paciente
         const paciente = await this.pacienteRepository.delete(id);
         
-        // ✅ NUEVO: Verificar que se eliminó correctamente
+        // Verificar que se eliminó correctamente
         if (!paciente) {
             throw createError('Error al eliminar el paciente', 500, {
                 operation: 'delete',

@@ -6,12 +6,12 @@ class GetPacienteByDniService {
     }
     
     async execute(dni) {
-        // ✅ Validar que se proporcionó DNI
+        // Validar que se proporcionó DNI
         if (!dni) {
             throw createError('DNI requerido para la búsqueda', 400, { field: 'dni' });
         }
 
-        // ✅ Validar formato de DNI (opcional, Joi ya valida pero doble check)
+        // Validar formato de DNI (opcional, Joi ya valida pero doble check)
         if (!/^[0-9]{7,8}$/.test(dni)) {
             throw createError('Formato de DNI inválido', 400, { 
                 field: 'dni', 
@@ -20,10 +20,10 @@ class GetPacienteByDniService {
             });
         }
         
-        // ✅ Buscar paciente por DNI
+        // Buscar paciente por DNI
         const paciente = await this.pacienteRepository.findByDni(dni);
         
-        // ✅ Validar que existe
+        // Validar que existe
         if (!paciente) {
             throw createError('Paciente no encontrado con ese DNI', 404, { 
                 field: 'dni', 

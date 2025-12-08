@@ -13,7 +13,7 @@ class PacienteRepository {
         return this.pacientes.get(id) || null;
     }
 
-    // ✅ NUEVO: Buscar paciente por DNI
+    // Buscar paciente por DNI
     async findByDni(dni) {
         for (const paciente of this.pacientes.values()) {
             if (paciente.dni === dni) {
